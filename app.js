@@ -1,10 +1,10 @@
 import validator from "validator";
-import getNotes from "./notes.js";
+import { getNote, addNote, removeNote, listNotes } from "./notes.js";
 import chalk from "chalk";
 import yargs from "yargs";
 import { hideBin } from "yargs/helpers";
 
-console.log(chalk.green.bold.italic("Program Started:)"));
+console.log(chalk.yellow.bold.italic("Program Started:)"));
 
 const yarg = yargs(hideBin(process.argv));
 
@@ -27,8 +27,9 @@ yarg.command({
       type: "string",
     },
   },
-  handler: (argv) => {
-    console.log(`Title: ${argv.title} and body is ${argv.body}`);
+  handler(argv) {
+    addNote(argv.title, argv.body);
+    //console.log(`Title: ${argv.title} and body is ${argv.body}`);
   },
 });
 
@@ -37,8 +38,15 @@ yarg.command({
 yarg.command({
   command: "remove",
   describe: "Remove a Note",
-  handler() {
-    console.log("Removing");
+  builder: {
+    title: {
+      describe: "Note title",
+      demandOption: true,
+      type: "string",
+    },
+  },
+  handler(argv) {
+    removeNote(argv.title);
   },
 });
 
@@ -47,8 +55,15 @@ yarg.command({
 yarg.command({
   command: "read",
   describe: "Reading a Note",
-  handler() {
-    console.log("Reading");
+  builder: {
+    title: {
+      describe: "Note title",
+      demandOption: true,
+      type: "string",
+    },
+  },
+  handler(argv) {
+    getNote(argv.title);
   },
 });
 
@@ -58,8 +73,10 @@ yarg.command({
   command: "list",
   describe: "Listing a Note",
   handler() {
-    console.log("Listing");
+    listNotes();
   },
 });
 
 yarg.parse();
+
+console.log(chalk.blue.bold.italic("Program Ended:)"));
